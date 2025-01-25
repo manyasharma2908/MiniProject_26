@@ -1,11 +1,14 @@
-
+import {useContext} from 'react';
 import {Dialog,Box,Typography,List,ListItem,styled} from '@mui/material';
 
 import {qrCodeImage} from '../../constants/data';
+import {AccountContext} from '../../context/AccountProvider';
+
 
 import {GoogleLogin} from '@react-oauth/google';
 
-// import jwt_decode from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
+
 
 
 const Component =styled(Box)`
@@ -50,14 +53,16 @@ const  dialogStyle ={
     maxWidth:'100%',
     maxHeight:'100%',
     boxShadow:'none',
-    overflow:'hidden'
-
+    overflow:'hidden',
+    backgroundColor :'none'
 }
+
 const LoginDialog =() =>{
 
+    const {setAccount} =useContext(AccountContext);
     const onLoginSuccess = (res) =>{
-       const decoded= jwt_decode(res.credential);
-       console.log(decoded);
+        const decoded= jwtDecode(res.credential);
+        setAccount(decoded);
     }
 
     const onLoginError =(res) =>{
@@ -70,15 +75,16 @@ const LoginDialog =() =>{
         <Dialog
             open={true}
             PaperProps={{sx:dialogStyle}}
+            hideBackdrop={true}
             >
-
+ 
                 <Component>
                     <Container>
                         <Typography>To use WhatsApp on your computer </Typography>
                         <StyledList>
                             <ListItem>1. Open WhatsApp on your phone</ListItem>
                             <ListItem>2. Tap Menu Settings and select WhatsApp</ListItem>
-                            <ListItem>3. Point your phont to this screen to capture the code</ListItem>
+                            <ListItem>3. Point your phone to this screen to capture the code</ListItem>
                         </StyledList>
                     </Container>
                     <Box style={{position:'relative'}}>
@@ -93,7 +99,7 @@ const LoginDialog =() =>{
 
                 </Component>
     
-
+ 
         </Dialog>
     )
 }
